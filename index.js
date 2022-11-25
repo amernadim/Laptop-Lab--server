@@ -17,6 +17,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
   try {
     const usersCollection = client.db("laptopLab").collection("users");
+    const categoryCollection = client.db("laptopLab").collection("categorys");
+
 
   // user info insert
   app.put("/user/:email", async (req, res) => {
@@ -30,6 +32,13 @@ async function run() {
         const result = await usersCollection.updateOne(filter, updateDoc, options);
         res.send(result)
      })
+
+    //  category get
+    app.get('/categories', async(req,res) => {
+      const query = {} ;
+      const result = await categoryCollection.find(query).toArray();
+      res.send(result)
+    })
 
 
   }
