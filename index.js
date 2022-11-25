@@ -50,10 +50,16 @@ async function run() {
       res.send(result)
     })
 
+    // post product 
+    app.post('/product', async(req,res)=> {
+      const product = req.body;
+      const result = await productsCollection.insertOne(product);
+      res.send(result);
+    })
+
     // booking post
     app.post('/booking' , async(req,res)=> {
        const booking = req.body ;
-       console.log(booking);
        const result = await bookingCollection.insertOne(booking);
        res.send(result)
     })
@@ -65,6 +71,7 @@ async function run() {
       const result = await bookingCollection.find(query).toArray();
       res.send(result)
     })
+
 
   }
   finally {
