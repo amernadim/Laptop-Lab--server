@@ -18,6 +18,7 @@ async function run() {
   try {
     const usersCollection = client.db("laptopLab").collection("users");
     const categoryCollection = client.db("laptopLab").collection("categorys");
+    const productsCollection = client.db("laptopLab").collection("products");
 
 
   // user info insert
@@ -37,6 +38,14 @@ async function run() {
     app.get('/categories', async(req,res) => {
       const query = {} ;
       const result = await categoryCollection.find(query).toArray();
+      res.send(result)
+    })
+
+    // get product by product id
+    app.get('/category/:id',async(req,res)=> {
+      const id = req.params.id;
+      const query = {categoryId : id};
+      const result = await productsCollection.find(query).toArray()
       res.send(result)
     })
 
