@@ -57,6 +57,14 @@ async function run() {
       res.send(result);
     })
 
+    // get product by email
+    app.get('/product/:email' , async(req,res) => {
+      const email = req.params.email;
+      const query = {sellerEmail : email}
+      const result = await productsCollection.find(query).toArray();
+      res.send(result);
+    })
+
     // booking post
     app.post('/booking' , async(req,res)=> {
        const booking = req.body ;
