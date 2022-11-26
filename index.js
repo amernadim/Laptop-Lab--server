@@ -98,7 +98,6 @@ async function run() {
   app.put("/product/:id", async (req, res) => {
     const id = req.params.id;
     const product = req.body;
-    // console.log(product,id);
     const filter = {_id:ObjectId(id)};
     const options = { upsert: true };
     const updateDoc = {
@@ -106,6 +105,14 @@ async function run() {
     }
     const result = await productsCollection.updateOne(filter, updateDoc, options);
     res.send(result)
+   })
+
+   // product delete
+   app.delete('/product/:id' , async(req,res)=> {
+    const id = req.params.id;
+    const query = {_id:ObjectId(id)};
+    const result = await productsCollection.deleteOne(query);
+    res.send(result);
    })
 
   //  get product by multiple query 
