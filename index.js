@@ -43,6 +43,19 @@ async function run() {
       res.send(result)
     })
 
+    //  seller update verify
+    app.put("/user/seller/:email" ,async(req,res) => {
+      const email = req.params.email;
+      const verify = req.body;
+      const filter = {email :  email};
+      const options = { upsert: true };
+        const updateDoc = {
+            $set: verify
+        }
+        const result = await usersCollection.updateOne(filter, updateDoc, options);
+      res.send(result)
+    })
+
     //  category get
     app.get('/categories', async(req,res) => {
       const query = {} ;
