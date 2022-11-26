@@ -117,6 +117,14 @@ async function run() {
     const result = await productsCollection.find(query).toArray();
     res.send(result)
   })
+  //  get reported product by query 
+  app.get('/products/reported', async(req,res) => {
+    const query = {
+      reportStatus : "reported"
+    }
+    const result = await productsCollection.find(query).toArray();
+    res.send(result)
+  })
 
   // booking post
     app.post('/booking' , async(req,res)=> {
