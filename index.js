@@ -56,6 +56,14 @@ async function run() {
       res.send(result)
     })
 
+    // user or seller delete
+    app.delete('/user/:email',async(req,res) => {
+      const email = req.params.email;
+      const query = {email : email};
+      const result = await usersCollection.deleteOne(query);
+      res.send(result)
+    })
+
     //  category get
     app.get('/categories', async(req,res) => {
       const query = {} ;
