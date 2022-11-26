@@ -35,6 +35,14 @@ async function run() {
         res.send(result)
      })
 
+    //  admin/user/seller get
+    app.get("/user/:role" ,async(req,res) => {
+      const role = req.params.role;
+      const query = {role :  role};
+      const result = await usersCollection.find(query).toArray()
+      res.send(result)
+    })
+
     //  category get
     app.get('/categories', async(req,res) => {
       const query = {} ;
