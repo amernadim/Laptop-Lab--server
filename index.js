@@ -22,8 +22,8 @@ async function run() {
     const bookingCollection = client.db("laptopLab").collection("booking");
 
 
-  // user info insert
-  app.put("/user/:email", async (req, res) => {
+    // user info insert
+    app.put("/user/:email", async (req, res) => {
         const email = req.params.email;
         const user = req.body;
         const filter = { email: email };
@@ -69,7 +69,7 @@ async function run() {
   app.put("/product/:id", async (req, res) => {
     const id = req.params.id;
     const product = req.body;
-    console.log(product,id);
+    // console.log(product,id);
     const filter = {_id:ObjectId(id)};
     const options = { upsert: true };
     const updateDoc = {
@@ -77,11 +77,31 @@ async function run() {
     }
     const result = await productsCollection.updateOne(filter, updateDoc, options);
     res.send(result)
- })
+   })
 
-    // booking post
+  //  get product by multiple query 
+  app.get('/products', async(req,res) => {
+    const query = {
+      available : "true",
+      advertise : "true",
+    }
+    const result = await productsCollection.find(query).toArray();
+    res.send(result)
+  })
+
+  // booking post
     app.post('/booking' , async(req,res)=> {
        const booking = req.body ;
+       const query = {
+        buyerEmail: booking.buyerEmail,
+        productId: booking.productId
+      }    
+      const alreadyBooked = await bookingCollection.find(query).toArray();
+      console.log(alreadyBooked);
+      if (alreadyBooked.length) {
+        const message = 'This product you already have a booked'
+        return res.send({ acknowledged: false, message })
+      }
        const result = await bookingCollection.insertOne(booking);
        res.send(result)
     })
@@ -92,7 +112,7 @@ async function run() {
       const query = {buyerEmail : email}
       const result = await bookingCollection.find(query).toArray();
       res.send(result)
-    })
+   })
 
 
   }
