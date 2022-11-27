@@ -89,14 +89,6 @@ async function run() {
       res.send({ isAdmin: result?.role === 'Admin' ,isSeller: result?.role === "Seller" , isUser: result?.role === 'User' });
     })
 
-    // // get seller
-    // app.get('/user/seller/:email', async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = { email : email }
-    //   const result = await usersCollection.findOne(query);
-    //   res.send({ isSeller: result?.role === 'Seller' });
-    // })
-
     // user info insert
     app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
@@ -122,23 +114,6 @@ async function run() {
       res.send(result);
     });
 
-    //  seller update verify
-    // app.put("/user/seller/:email", async (req, res) => {
-    //   const email = req.params.email;
-    //   const verify = req.body;
-    //   const filter = { email: email };
-    //   const options = { upsert: true };
-    //   const updateDoc = {
-    //     $set: verify,
-    //   };
-    //   const result = await usersCollection.updateOne(
-    //     filter,
-    //     updateDoc,
-    //     options
-    //   );
-    //   res.send(result);
-    // });
-
     // user or seller delete
     app.delete("/user/:email",verifyJWT,verifyAdmin, async (req, res) => {
       const email = req.params.email;
@@ -148,7 +123,7 @@ async function run() {
     });
 
     //  category get
-    app.get("/categories",verifyJWT, async (req, res) => {
+    app.get("/categories", async (req, res) => {
       const query = {};
       const result = await categoryCollection.find(query).toArray();
       res.send(result);
@@ -206,7 +181,7 @@ async function run() {
     });
 
     //  get product by multiple query
-    app.get("/products",verifyJWT, async (req, res) => {
+    app.get("/products", async (req, res) => {
       const query = {
         available: "true",
         advertise: "true",
