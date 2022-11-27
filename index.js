@@ -57,8 +57,28 @@ async function run() {
       res.status(403).send({ accessToken: "No token" });
     });
 
+    // Admin verify
+    const verifyAdmin = async (req, res, next) =>{
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const result = await usersCollection.findOne(query);
+
+      if (result?.role !== 'Admin') {
+          return res.status(403).send({ message: 'forbidden access' })
+      }
+      next();
+    }
+
+    // get admin
+    app.get('/user/admin/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email : email }
+      const result = await usersCollection.findOne(query);
+      res.send({ isAdmin: result?.role === 'Admin' });
+    })
+
     // user info insert
-    app.put("/user/:email", async (req, res) => {
+    app.put("/user/:email",verifyJWT, async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const filter = { email: email };
