@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
 const app = express()
@@ -20,6 +21,18 @@ async function run() {
     const categoryCollection = client.db("laptopLab").collection("categorys");
     const productsCollection = client.db("laptopLab").collection("products");
     const bookingCollection = client.db("laptopLab").collection("booking");
+
+    // Json web token
+    app.get('/jwt', async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      if (user) {
+        const jwtToken = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1d' })
+        return res.send({ accessToken: jwtToken });
+      }
+       res.status(403).send({ accessToken: 'No token' })
+     });
 
 
     // user info insert
@@ -74,7 +87,10 @@ async function run() {
     // get product by product id
     app.get('/category/:id',async(req,res)=> {
       const id = req.params.id;
-      const query = {categoryId : id};
+      const query = {
+        categoryId : id,
+        available : "true"
+      };
       const result = await productsCollection.find(query).toArray()
       res.send(result)
     })
