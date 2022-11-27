@@ -83,24 +83,24 @@ async function run() {
     });
 
     //  seller update verify
-    app.put("/user/seller/:email", async (req, res) => {
-      const email = req.params.email;
-      const verify = req.body;
-      const filter = { email: email };
-      const options = { upsert: true };
-      const updateDoc = {
-        $set: verify,
-      };
-      const result = await usersCollection.updateOne(
-        filter,
-        updateDoc,
-        options
-      );
-      res.send(result);
-    });
+    // app.put("/user/seller/:email", async (req, res) => {
+    //   const email = req.params.email;
+    //   const verify = req.body;
+    //   const filter = { email: email };
+    //   const options = { upsert: true };
+    //   const updateDoc = {
+    //     $set: verify,
+    //   };
+    //   const result = await usersCollection.updateOne(
+    //     filter,
+    //     updateDoc,
+    //     options
+    //   );
+    //   res.send(result);
+    // });
 
     // user or seller delete
-    app.delete("/user/:email", async (req, res) => {
+    app.delete("/user/:email",verifyJWT, async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
       const result = await usersCollection.deleteOne(query);
@@ -108,14 +108,14 @@ async function run() {
     });
 
     //  category get
-    app.get("/categories", async (req, res) => {
+    app.get("/categories",verifyJWT, async (req, res) => {
       const query = {};
       const result = await categoryCollection.find(query).toArray();
       res.send(result);
     });
 
     // get product by product id
-    app.get("/category/:id", async (req, res) => {
+    app.get("/category/:id",verifyJWT, async (req, res) => {
       const id = req.params.id;
       const query = {
         categoryId: id,
@@ -125,15 +125,15 @@ async function run() {
       res.send(result);
     });
 
-    // post product
-    app.post("/product", async (req, res) => {
+    // post product / add a product
+    app.post("/product",verifyJWT, async (req, res) => {
       const product = req.body;
       const result = await productsCollection.insertOne(product);
       res.send(result);
     });
 
     // get product by email
-    app.get("/product/:email", async (req, res) => {
+    app.get("/product/:email",verifyJWT, async (req, res) => {
       const email = req.params.email;
       const query = { sellerEmail: email };
       const result = await productsCollection.find(query).toArray();
@@ -141,7 +141,7 @@ async function run() {
     });
 
     // product update
-    app.put("/product/:id", async (req, res) => {
+    app.put("/product/:id",verifyJWT, async (req, res) => {
       const id = req.params.id;
       const product = req.body;
       const filter = { _id: ObjectId(id) };
@@ -158,7 +158,7 @@ async function run() {
     });
 
     // product delete
-    app.delete("/product/:id", async (req, res) => {
+    app.delete("/product/:id",verifyJWT, async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await productsCollection.deleteOne(query);
@@ -166,7 +166,7 @@ async function run() {
     });
 
     //  get product by multiple query
-    app.get("/products", async (req, res) => {
+    app.get("/products",verifyJWT, async (req, res) => {
       const query = {
         available: "true",
         advertise: "true",
@@ -175,7 +175,7 @@ async function run() {
       res.send(result);
     });
     //  get reported product by query
-    app.get("/products/reported", async (req, res) => {
+    app.get("/products/reported",verifyJWT, async (req, res) => {
       const query = {
         reportStatus: "reported",
       };
@@ -184,7 +184,7 @@ async function run() {
     });
 
     // booking post
-    app.post("/booking", async (req, res) => {
+    app.post("/booking",verifyJWT, async (req, res) => {
       const booking = req.body;
       const query = {
         buyerEmail: booking.buyerEmail,
@@ -201,7 +201,7 @@ async function run() {
     });
 
     // get my order by email
-    app.get("/booking/:email", async (req, res) => {
+    app.get("/booking/:email",verifyJWT, async (req, res) => {
       const email = req.params.email;
       const query = { buyerEmail: email };
       const result = await bookingCollection.find(query).toArray();
