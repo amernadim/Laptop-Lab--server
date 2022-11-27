@@ -81,24 +81,24 @@ async function run() {
       next();
     }
 
-    // get admin
-    app.get('/user/admin/:email', async (req, res) => {
+    // get admin / seller / user
+    app.get('/user/role/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email : email }
       const result = await usersCollection.findOne(query);
-      res.send({ isAdmin: result?.role === 'Admin' });
+      res.send({ isAdmin: result?.role === 'Admin' ,isSeller: result?.role === "Seller" , isUser: result?.role === 'User' });
     })
 
-    // get seller
-    app.get('/user/seller/:email', async (req, res) => {
-      const email = req.params.email;
-      const query = { email : email }
-      const result = await usersCollection.findOne(query);
-      res.send({ isSeller: result?.role === 'Seller' });
-    })
+    // // get seller
+    // app.get('/user/seller/:email', async (req, res) => {
+    //   const email = req.params.email;
+    //   const query = { email : email }
+    //   const result = await usersCollection.findOne(query);
+    //   res.send({ isSeller: result?.role === 'Seller' });
+    // })
 
     // user info insert
-    app.put("/user/:email",verifyJWT, async (req, res) => {
+    app.put("/user/:email", async (req, res) => {
       const email = req.params.email;
       const user = req.body;
       const filter = { email: email };
