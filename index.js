@@ -69,12 +69,32 @@ async function run() {
       next();
     }
 
+    // Seller verify
+    const verifySeller = async (req, res, next) =>{
+      const decodedEmail = req.decoded.email;
+      const query = { email: decodedEmail };
+      const result = await usersCollection.findOne(query);
+
+      if (result?.role !== 'Seller') {
+          return res.status(403).send({ message: 'forbidden access' })
+      }
+      next();
+    }
+
     // get admin
     app.get('/user/admin/:email', async (req, res) => {
       const email = req.params.email;
       const query = { email : email }
       const result = await usersCollection.findOne(query);
       res.send({ isAdmin: result?.role === 'Admin' });
+    })
+
+    // get seller
+    app.get('/user/seller/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email : email }
+      const result = await usersCollection.findOne(query);
+      res.send({ isSeller: result?.role === 'Seller' });
     })
 
     // user info insert
@@ -120,7 +140,7 @@ async function run() {
     // });
 
     // user or seller delete
-    app.delete("/user/:email",verifyJWT, async (req, res) => {
+    app.delete("/user/:email",verifyJWT,verifyAdmin, async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
       const result = await usersCollection.deleteOne(query);
@@ -146,7 +166,7 @@ async function run() {
     });
 
     // post product / add a product
-    app.post("/product",verifyJWT, async (req, res) => {
+    app.post("/product",verifyJWT,verifySeller, async (req, res) => {
       const product = req.body;
       const result = await productsCollection.insertOne(product);
       res.send(result);
@@ -178,7 +198,7 @@ async function run() {
     });
 
     // product delete
-    app.delete("/product/:id",verifyJWT, async (req, res) => {
+    app.delete("/product/:id",verifyJWT,verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await productsCollection.deleteOne(query);
