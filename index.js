@@ -5,9 +5,6 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
-// const stripe = require("stripe")('sk_test_51M6QudL64DhoRs6IQTuX83T2vCW3hJK7uBfmXNzVzvY8iDUpOid1vpCTRBf7p0OMgNq3K1sT0m7i2d9AL7u795FV00xaAeCQpI');
-// console.log(stripe);
-
 const port = process.env.PORT || 5000;
 
 const app = express();
@@ -74,6 +71,7 @@ async function run() {
       const ide = payment.productId;
       const filter = {_id: ObjectId(id)};
       const query = {_id:ObjectId(ide)};
+      console.log(filter,query);
       const updatedDoc = {
           $set: {
               paid: true,
